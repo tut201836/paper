@@ -1,0 +1,56 @@
+\documentclass[uplatex, a4paper, 12pt]{jsbook}
+
+\usepackage[dvipdfmx]{graphicx}
+\usepackage[dvipdfmx, bookmarks=true, setpagesize=false]{hyperref}
+\usepackage{pxjahyper}
+
+\usepackage{thesis}
+
+\thesis{修士論文}
+\title{
+  \scalebox{1.0}{二足歩行ロボットの}\\
+  \vspace{0.3zh}
+  \scalebox{1.0}{軟弱地面歩行アルゴリズムの提案と評価}\\
+  \vspace{-3zh}
+}
+
+\date{2026年 ~~月 ~=日 }
+
+\teacher{垣内 洋平 教授}
+\vspace{-2.0zh}
+\organization{豊橋技術科学大学大学院 工学研究科 情報・知能工学専攻}
+\author{M201836 新家 海斗}
+\vspace{-10zh}
+\begin{document}
+
+%% Front Matter
+\frontmatter{}
+%
+\include{frontmatter/main}
+%
+%% Main Matter
+\mainmatter{}
+%
+\include{introduction/main}
+%
+\include{control-overview/main}
+%
+\include{related-research/main}
+%
+\include{method/main}
+%
+\include{experiment/main}
+%
+\include{conclusion/main}
+%
+%% Appendix
+% \appendix{}
+% \include{appendix}
+%
+%% Back Matter
+\backmatter{}
+%
+\include{backmatter/main}
+%
+
+\end{document}

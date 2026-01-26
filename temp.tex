@@ -1,0 +1,531 @@
+%========================================
+% 研究審査 用 論文テンプレート (pdfLaTeX + CJKutf8)
+%========================================
+\documentclass[a4paper,11pt]{report}
+
+
+% --- 日本語設定（pdfLaTeX専用） ---
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{CJKutf8}
+
+% --- よく使うパッケージ ---
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{xcolor}
+
+\usepackage[top=25mm,bottom=25mm,left=25mm,right=25mm]{geometry}
+
+\usepackage{titlesec}
+
+\renewcommand{\contentsname}{目次}
+\renewcommand{\bibname}{参考文献}
+
+% 「第一章」「第二章」みたいに漢数字にしたい場合
+\renewcommand{\thechapter}{\CJKnumber{\arabic{chapter}}} % ← CJKutf8ならこっちが安全
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries}
+  {第\thechapter 章}
+  {20pt}
+  {\Huge}
+
+\newcommand{\thesistitle}{二足歩行ロボットの軟弱地面歩行アルゴリズムの提案と評価}
+\newcommand{\thesisyear}{2025}                % 年度
+\newcommand{\thesisdegree}{修士（工学）}     % 学位
+\newcommand{\major}{情報・知能工学専攻}      % 専攻名（適宜変更）
+\newcommand{\authorname}{新家 海斗}          % 氏名
+\newcommand{\studentid}{201836}          % 学籍番号 ← ここを書き換え
+\newcommand{\advisor}{指導教員: 垣内 洋平}   % 指導教員 ← ここを書き換え
+\newcommand{\university}{豊橋技術科学大学}   % 大学名（必要なら学府名も）
+
+
+\begin{document}
+\begin{CJK}{UTF8}{min}
+
+\begin{titlepage}
+  \begin{center}
+    \vspace*{60mm}
+
+    {\LARGE \thesistitle \par} % 題目（2行に自動で折り返し）
+
+    \vspace{20mm}
+
+    {\Large \thesisyear \par}
+
+    \vspace{5mm}
+
+    {\Large \thesisdegree \par}
+
+    \vspace{5mm}
+
+    {\Large \major \par}
+
+    \vspace{15mm}
+
+    {\Large \authorname \par}
+
+    \vspace{3mm}
+
+    {\Large \studentid \par}
+
+    \vspace{10mm}
+
+    {\Large \advisor \par}
+
+    \vspace{15mm}
+
+    {\Large \university \par}
+
+  \end{center}
+\end{titlepage}
+
+%========================================
+\chapter*{概要}
+\addcontentsline{toc}{chapter}{概要}
+
+本研究では，軟弱地面における二足歩行ロボットの歩行安定性向上を目的として，
+重心高さが床変形の影響を受けて変動する環境に適応可能な歩行生成アルゴリズムを提案する．
+従来の歩行生成では，線形倒立振子モデル（LIPM）を用いて重心高さを一定と仮定することで安定な歩行を実現してきたが，
+砂地やスポンジ床のような軟弱地面では，足底が沈み込むことで重心高さが瞬間的に変化し，
+従来のLIPMベース制御では不安定化が生じやすいという問題があった．
+
+本研究では，床沈み込み量を推定し，その変動成分を重心高さの参照値に反映させる
+LIPM拡張型の重心高さ補償アルゴリズムを提案する．
+沈み込みが検出された場合には鉛直方向の速度および加速度項を目標重心高さに加算することで，
+動的に変化する床高さに追従可能な歩行軌道を生成する．
+この方法はLIPMの枠組みを維持しつつ鉛直方向の自由度を扱うため，
+計算コストが低く既存の歩行制御器へ容易に統合できる．
+
+提案手法の有効性を検証するため，Choreonoid上に構築したCHIDORIロボットモデルを用いて，
+床をバネマスダンパ系で表現した飛び石地形シミュレーションを実施した．
+その結果，従来のLIPM制御では沈み込み発生時に重心が支持多角形外へ発散し転倒したのに対し，
+提案手法では鉛直方向合力の適切な増加と体幹の支持脚側への傾斜調整により重心発散が抑制され，
+歩行を継続できることを確認した．
+
+以上より，本研究で提案する重心高さ補償アルゴリズムは，
+軟弱地面に固有の鉛直方向の不確実性に対してロバストに機能し，
+二足歩行ロボットの実環境適応性を高める手法として有効であることを示した．
+
+
+\vspace{5mm}
+%========================================
+\addcontentsline{toc}{chapter}{Abstract}
+
+This thesis proposes a walking stabilization algorithm for biped robots
+that improves locomotion robustness on deformable terrain where the center of mass (CoM) height changes due to ground compliance.
+Conventional walking pattern generators based on the Linear Inverted Pendulum Model (LIPM) assume a constant CoM height,
+which works well on rigid floors but often leads to instability when the foot sinks into soft surfaces such as sand or foam.
+
+To address this issue, we introduce an extended LIPM based height compensation algorithm.
+The method estimates the amount of ground sinkage and reflects its variation into the reference CoM height.
+A low pass filter and hysteresis are used to detect ground deformation.
+When sinking is detected, vertical velocity and acceleration terms are added to the reference height,
+allowing the robot to generate CoM trajectories that follow the dynamically changing ground level.
+Because the method preserves the LIPM framework, it requires low computational cost
+and can be easily integrated into existing walking controllers.
+
+The proposed method was evaluated using a CHIDORI robot model in the Choreonoid simulator,
+with deformable stepping stone terrain modeled as a spring mass damper system.
+Simulation results show that the baseline LIPM controller fails when sinking occurs,
+causing the CoM to diverge outside the support polygon.
+In contrast, the proposed method increases the vertical ground reaction force appropriately
+and induces a stabilizing trunk inclination toward the support foot,
+successfully preventing CoM divergence and enabling continuous walking.
+
+These results demonstrate that the proposed CoM height compensation algorithm
+effectively mitigates the vertical uncertainty characteristic of deformable terrain
+and improves the adaptability of biped robots to real-world environments.
+
+
+\tableofcontents
+
+%========================================
+\chapter{序論}
+%========================================
+
+\section{研究背景}
+二足歩行ロボットは，人間と同様の形状を持つため，既存のインフラをそのまま利用できるという大きな利点がある．  
+この特徴を活かし，災害対応，建設現場，介護，サービス産業など，さまざまな分野での利用が期待されている．
+
+しかしながら，二足歩行ロボットは重心が高く，支持脚が小さいため，本質的に不安定である．さらに，歩行中の床の剛性，摩擦，段差といった環境要因の不確実性が歩行安定性に大きく影響する．このような要因により，二足歩行ロボットの実用化は依然として多くの課題を抱えている．
+
+\section{研究目的}
+本研究の目的は，\textbf{軟弱地面（伸縮マットや砂地など）における二足歩行の安定性を向上させる}ことである．  
+具体的には，地面が力によって沈み込む環境を対象として，既存の LIPM （Linear Inverted Pendulum Model）ベースの歩容生成器と整合性を保ちながら，歩行安定性を改善する新たなアルゴリズムを提案する．
+
+\section{研究の意義}
+提案するアルゴリズムは，既存の歩行制御器に容易に組み込むことができ，かつ低計算コストで実現可能である．これにより，ロボットが柔らかい床の上でもより安定して歩行できるようになり，実用環境での適用範囲拡大に貢献する．
+
+%========================================
+\chapter{基礎知識}
+%========================================
+
+\section{ZMP（Zero Moment Point）}
+Zero Moment Point（ZMP）は，二足歩行ロボットの安定性を評価するために広く用いられる概念であり，
+ロボットが地面から受ける床反力のうち，\textbf{水平面内のモーメントが零となる地面上の点}として定義される．
+
+ZMP は，ロボットが倒れようとする方向のモーメントが床反力によって打ち消される
+「力学的平衡点」を示しており，
+この点が\textbf{支持多角形（足裏の接地領域の凸包）内に存在する場合，ロボットは静力学的に安定である}とされる．
+逆に，ZMP が支持多角形外に出ると，床反力では転倒方向のモーメントを抑制できず，
+ロボットは姿勢保持が困難になる．
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.3\linewidth]{fig1.png}
+  \caption{支持多角形の概念図}
+  \label{fig:zmp}
+\end{figure}
+
+\section{制御フロー}
+ここでは二足歩行ロボットの制御フローを理解するために，全体のシステム図の概略を提示した．
+二足歩行ロボットの制御は大きく分けてMPCと呼ばれるモデル予測制御部分と逆運動学制御の部分に分けられる．流れとしては，フィードバックで返ってきた実測ZMPとCoMを基に目標CoM軌道を生成する．そして，生成された目標CoM軌道を基に，逆運動学に基づいて各関節角度が生成される．そのあと，生成された関節角度をロボットに指令することで，二足歩行ロボットは歩行を行っている．
+本研究は，このフローのMPC(モデル予測制御)の部分に焦点を当てている．
+
+\begin{figure}[H]
+  \centering
+    \colorbox{white}{%
+    \includegraphics[width=0.7\linewidth]{flow.png}%
+    }
+  \caption{二足歩行ロボットのシステム図}
+  \label{fig:zmp}
+\end{figure}
+
+\section{線形倒立振子モデル（Linear Inverted Pendulum Model: LIPM）}
+
+MPCは実測のZMPとCoMから目標CoM軌道を生成するということであった．その軌道生成に用いられるのが，線形倒立振子モデルことLIPMである．
+線形倒立振子モデル（Linear Inverted Pendulum Model, LIPM）は，
+二足歩行ロボットの重心運動を簡潔に記述するために広く用いられるモデルである．
+LIPM では，ロボット全体の質量が一点に集中した質点として表現され，
+この質点が一定高さ $c_z$ を保ちながら鉛直方向に固定された質量のない脚によって支持されると仮定する．
+また，支持脚と地面との接触は点あるいは小さな支持領域で行われるとみなし，
+重心高さが一定であることから重心運動は水平方向のみを考えればよいとする．
+
+重力加速度を $g$，重心の水平方向位置を $c_{xy}$，ZMP の位置を $z_{xy}$ とすると，
+LIPM における運動方程式は次式で与えられる．
+
+\begin{equation}
+  \ddot{c}_{xy}(t + dt) = \omega^2 \left( c_{xy}(t) - z_{xy}(t) \right),
+  \label{eq:lipm_basic}
+\end{equation}
+
+ただし，$\omega$ は倒立振子の自然周波数であり，
+\begin{equation}
+  \omega = \sqrt{\frac{g}{c_z}}
+\end{equation}
+で定義される．
+
+式\,\eqref{eq:lipm_basic} は，
+重心位置 $c_{xy}$，その加速度 $\ddot{c}_{xy}$ と ZMP 位置 $z_{xy}$ を線形関係で結び付けており，
+実測ZMPとCoMを適切に与えることで，重心軌道を解析的に生成できることを意味する．
+この性質により，LIPM は ZMP プレビュー制御や Model Predictive Control（MPC）に基づく
+歩行パターン生成・安定化手法において標準的なモデルとして用いられている．
+しかし先ほども述べたように，このLIPMはCoM高さが変化する場合を想定していないため，本研究は，CoM高さが可変なものでも扱えるような拡張アルゴリズムの提案を行う．
+
+\begin{figure}[H]
+  \centering
+    \colorbox{white}{%
+    \includegraphics[width=0.4\linewidth]{fig2.png}%
+  }
+  \caption{線形倒立振子モデル}
+  \label{fig:zmp}
+\end{figure}
+
+%========================================
+\chapter{先行研究}
+%========================================
+
+\section{VHIP（Variable Height Inverted Pendulum）}
+可変高さ倒立振子モデル（Variable-Height Inverted Pendulum Model, VHIP）は，
+従来の線形倒立振子モデル（Linear Inverted Pendulum Model, LIPM）が前提とする
+「重心高さ一定」という強い仮定を緩和し，重心（Center of Mass: CoM）の鉛直方向運動を
+考慮可能としたモデルである．
+LIPM は歩行パターン生成に広く利用されている一方で，
+急な段差，柔軟な床面，立位姿勢の上げ下げなど，
+鉛直方向に大きな運動が生じる状況ではモデル誤差が大きくなるという課題がある．
+こうした制約を克服するため，CoM の高さを制御・変化可能とする VHIP が提案されている．
+
+VHIP の水平方向の運動方程式は，ZMP（Zero Moment Point）位置 $z_{xy}$ と CoM 位置 $c_xy$ の関係として
+次の非線形モデルで表される．
+
+\begin{equation}
+  \ddot{c}_{xy}(t + dt) = \lambda(t)\bigl(c_{xy}(t) - z_{xy}(t)\bigr),
+  \label{eq:vhip_basic}
+\end{equation}
+
+ここで $\lambda(t)$ は時変の「仮想倒立振子剛性」を表し，次式で定義される．
+
+\begin{equation}
+  \lambda(t) = \frac{g + \ddot{c}_z(t)}{c_{z}(t) - z_{z}(t)},
+\end{equation}
+
+$c_z(t)$ は CoM 高さ，$z_z(t)$ は ZMP の鉛直位置である．
+$\lambda(t)$ が一定で CoM 高さ $z$ が固定される場合には，
+$\lambda = g/c_z$ となり LIPM の運動方程式へと退化する．
+従って，VHIP は LIPM を特別な場合として含む一般化モデルである．
+
+VHIP の利点は，CoM 高さを明示的に扱えるため，
+段差昇降，歩行中のスクワット動作，あるいは着地衝撃吸収など，
+鉛直方向の動的運動が重要となる場面に適用可能である点にある．
+特に，Caron と Mallein による研究 \cite{caron2017} では，
+VHIP の可到達性解析と \emph{boundedness condition} が提案され，
+非線形モデルでありながらロボットの歩行安定性を数学的に評価するための基盤が整備された．
+さらに Faraji と Ijspeert \cite{faraji2017} は，
+VHIP を用いて CoM 高さ変動と水平運動を統合的に扱う MPC ベースの歩行生成法を提案しており，
+足先位置と CoM 軌道を同時に最適化することで，三次元地形に対してよりロバストな歩行計画が可能であることを示している．
+
+このように，VHIP は LIPM の枠組みを拡張し，
+鉛直方向の運動や床面の不整に強い歩行生成・安定化制御を実現するための重要なモデルとして
+近年注目されている．
+
+\section{本研究の位置付け}
+本研究で対象とする二足歩行ロボットの鉛直方向運動は，従来広く用いられてきた一定重心高さを仮定する LIPM に対し，鉛直方向の速度と加速度を用いて制御する点である.
+
+VHIP は，高さ方向のゲイン $\lambda(t)$ を時間変化させることで，重心高さを利用した安定化や余裕度（boundedness）の評価を可能とする枠組みである．
+
+そこで本研究の位置づけとしては，VHIP のように重心高さの自由度を積極的に活用するという発想を踏まえつつも，モデル自体は LIPM を基礎とし，床の沈み込み量を推定して参照重心高さにフィードバックするという，より実装容易な拡張手法を提案する．
+
+\chapter{本研究の概要}
+本研究の目的は，土や砂など外力に応じて変形し，結果としてロボットの重心（CoM）高さに影響を与えるような軟弱地面上における歩行の安定化を実現することである．
+このような環境では，床面の変形に伴い CoM 高さが時間的に変動するため，従来の一定高さを仮定した LIPM（Linear Inverted Pendulum Model）に基づく歩行生成手法では十分な安定性が得られない場合がある．
+
+そこで本研究では，CoM 高さが可変となる状況にも適応可能な LIPM 拡張型歩行アルゴリズムを提案し，その有効性をシミュレーションにより評価した．
+本稿で扱う軟弱地面は，鉛直方向には変形するものの，水平方向の傾きは生じないという単純化したモデルとして扱う．
+
+
+%========================================
+\chapter{提案アルゴリズム}
+%========================================
+\section{アルゴリズムの概要}
+ここでは，提案アルゴリズムの概要について論ずる．従来の制御ではCoM$_z$を一定に保つような制御を行ってきた．しかしこのアルゴリズムの大きな点は，沈み込みにより発生した速度と加速度を目標CoM$_z$に反映させるという点である．これにより，高低差による影響を軽減できると考えた．
+
+アルゴリズムの流れは図の通りである．まず床の沈み込みの判定を行う．判定にはローパスフィルタとヒステリシスを使用している．そして判定結果がfalse，つまり剛性の床だった場合，上の式に移行する．こちらは従来の制御と同様のものである．
+次フレームの目標CoM$_xy$は現在のCoM座標に，速度と加速度の積分に単位時間をかけたものを足し合わせて導出される．そして，目標CoM$_z$は，現在のCoM$_z$を維持させるような処理が行われる．
+
+次はTrue，沈み込む床に踏み込んだ場合だが，CoM$_xy$について同じ動作を行うが，CoM$_z$に関しては剛性の床とは異なる．違う点は，CoM$_z$も同様に，速度と加速度の積分を単位時間でかけたものを目標CoM$_z$に加えているという点である．これにより，より柔軟に床の沈み込みに対応できるのではないかと考えた．
+
+\begin{figure}[H]
+  \centering
+    \colorbox{white}{%
+    \includegraphics[width=1.0\linewidth]{fig3.png}%
+  }
+  \caption{アルゴリズム全体フロー}
+  \label{fig:zmp}
+\end{figure}
+
+%========================================
+\chapter{提案アルゴリズムの効果}
+%========================================
+
+前章では，軟弱地面における歩行安定性向上を目的とした重心高さ補償アルゴリズムの構造および処理手順について述べた．本章では，そのアルゴリズムが実際の歩行運動にどのような影響を与え，どのような安定化効果をもたらすのかに着目して論ずる．
+
+\section{重心高さ変動に対する安定化効果}
+軟弱地面では，支持脚が接地した際の床沈み込みにより実際の重心高さ（CoM$_{z}$）が瞬間的に低下する．提案手法ではこの床変形量が参照重心高さに反映されるため，ロボットは CoM$_{z}$ の低下に対し鉛直方向の加速度を適切に与え，重心高さを所望値に保とうとする．
+
+ロボットの鉛直方向運動方程式
+\begin{equation}
+    m\ddot{c}_z = \sum_{i}{f_iz} - mg
+\end{equation}
+に着目すると，CoM$_{z}$ を回復するための正の加速度 $\ddot{c}_z>0$ を生成するには，鉛直方向の合力 $ \sum_{i}{f_iz}$ を増加させる必要がある．
+
+\section{鉛直方向の目標合力の増加に伴う姿勢安定化効果}
+鉛直方向の目標合力 $ \sum_{i}{f_iz}$ を増加させる際には，支持脚に荷重を集中させる必要がある．しかし，実際の関節構造や足裏位置の幾何学的制約により，垂直反力の増加にはロール方向の余剰モーメントが付随する傾向がある．このモーメントは，場合によっては転倒方向の不安定性を引き起こす要因となる．
+
+提案手法を適用した場合，ロボットはこの余剰モーメントを打ち消すため，自律的に体幹を支持脚側に傾斜させる姿勢調整を行う．この姿勢制御は，床反力増加と同時にロール方向の安定化を実現し，支持脚に確実に荷重を乗せることを可能とする．
+
+\section{軟弱地面における総合的な安定化効果}
+以上のメカニズムにより，提案アルゴリズムは以下のような総合的効果をもたらす：
+
+\begin{itemize}
+    \item 床沈み込みによる重心高さの急激な変動が補償され，重心軌道の破綻を防ぐ．
+    \item 鉛直方向加速度を適切に生成することで，必要な床反力を確実に確保できる．
+    \item 余剰ロールモーメントに対する姿勢調整が行われ，支持脚側に安定した荷重分配が実現される．
+    \item 結果として，軟弱地面固有の不確実性に対しても安定した歩行が維持できる．
+\end{itemize}
+
+これらの効果により，提案手法は軟弱地面における重心高さの不確実性をリアルタイムに補償
+
+%========================================
+\chapter{実験環境と実験方法}
+%========================================
+
+\section{実験環境}
+本研究で用いたシミュレーション環境および使用するロボットを以下に示す．
+
+\begin{itemize}
+  \item OS: Ubuntu 20.04
+  \item シミュレータ: Choreonoid 2.2.0
+  \item ロボット：CHIDORI
+\end{itemize}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.5\linewidth]{chidori.png}
+  \caption{CHIDORI}
+  \label{fig:zmp}
+\end{figure}
+
+
+上記の環境上で，二足歩行ロボットモデルおよび提案手法を実装し，歩行軌道生成および軟弱地面上での歩行安定性に関する検証を行った．
+
+\section{飛び石地形シミュレーション}
+本研究の評価には，飛び石地形を模したシミュレーション環境を使用した．  
+地面タイルのうち，水色タイルは力を受けると沈むように設定されている．また，本研究では条件を簡単にするため，床の変形は高さのみで，傾かずに水平を維持するものとする．
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.7\linewidth]{fig4.png}
+  \caption{飛び石地形}
+  \label{fig:zmp}
+\end{figure}
+
+\section{床沈み込みモデル}
+本研究では，床の沈み込みをバネ・マス・ダンパー系モデルとして扱う．  
+床が沈む量 $z_f$ を以下で表す：
+
+\[
+F = K z_f + D \dot{z_f}
+\]
+実環境で扱う測定が未実施なため，パラメータは以下の数値を用いた．
+
+\[
+K = 7000,\quad D = 2000
+\]
+
+\subsection{床パラメータの実測(未実施)}
+床の物理特性パラメータの測定には, 工業用ロボットアームUR5に力覚センサを取り付け，床材を押し込むことで計測を行う予定である．
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.7\linewidth]{fig5.jpg}
+  \caption{力覚センサを取り付けたUR5}
+  \label{fig:zmp}
+\end{figure}
+
+\section{歩行条件}
+歩行速度は1ステップあたり4.0秒，両足支持期割合は30％とし，ベースライン（既存LIPM）と提案アルゴリズムで比較を行った．  
+
+%========================================
+\chapter{実験結果と考察}
+%========================================
+
+\section{結果}
+ベースライン（既存LIPM）でのシミュレーションでは，沈み込む床を踏み込み，片足重心になった瞬間重心を支持多角形内に維持できず転倒した．しかし提案アルゴリズム適用後は，重心が発散しかけはするものの，そのあとは安定して歩行を継続することができた．
+
+\section{CoM$_y$とZMP$_y$の比較}
+ベースライン（既存LIPM）と提案アルゴリズムのシミュレーション結果のCoM$_y$とZMP$_y$の挙動の比較を行った．グラフから，ベースラインのCoM$_y$はy軸正方向に発散しているのに対し，アルゴリズム適用後のデータは発散しかけはするものの，安定しているのが分かる．
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.4\linewidth]{Default_Algo_CoM_ZMP_Foot.png}
+  \includegraphics[width=0.4\linewidth]{UseAlgorithm_Algo_CoM_ZMP_Foot.png}
+  \caption{アルゴリズム適用前後でのCoM$_y$とZMP$_y$の比較}
+  \label{fig:comzmp}
+\end{figure}
+
+\section{CoM$_y$が安定した原因}
+ここではアルゴリズムの効果でCoM$_y$が安定した原因をデータに基づいて論ずる．
+
+\subsection{沈み込みによる目標CoM$_z$と加速度の増加}
+Figure 8.2 より，床の沈み込みが発生したことにより目標加速度が増加していることが分かる．そして同時に，アルゴリズム適用後の目標CoM$_z$が，ベースライン（既存LIPM）のものよりも増加しているのが分かる．
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.4\linewidth]{com_planned (1).png}
+  \caption{アルゴリズム適用前後でのCoM$_y$とZMP$_y$の比較}
+  \label{fig:comzmp}
+\end{figure}
+
+\subsection{目標CoM$_z$増加に伴うroll方向の体幹の傾きと実測CoM$_y$の変化}
+Figure 8.3 より，アルゴリズム適用後のroll方向の体幹が，ベースライン（既存LIPM）と比べてy軸マイナス方向(支持脚側)に傾いていることが分かる．同時にそのタイミングで実測CoM$_y$の発散が収まっていることが分かる．
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.4\linewidth]{com_roll (1).png}
+  \caption{roll方向の体幹の傾きと実測CoM$_y$}
+  \label{fig:comzmp}
+\end{figure}
+
+%========================================
+\chapter{結論}
+%========================================
+
+\section{まとめ}
+
+本研究では，LIPM 制御系を拡張し，床沈み込みに伴う鉛直方向の速度および加速度成分を目標 CoM 高さに反映させる重心高さ補償アルゴリズムを提案した．
+
+シミュレーション結果から，提案手法により，床沈み込みが生じた際にロボットが必要な鉛直方向合力を適切に生成し，その結果として体幹が支持脚側へ自律的に傾斜する安定化動作が誘発されることが確認された．
+
+この姿勢調整は支持脚への荷重集中とロール方向の安定化を同時に達成し，従来の LIPM 制御で見られた重心発散や転倒を防ぐ効果を持つことが示された．
+
+以上より，提案手法は CoM 高さが変動する軟弱地面においても，歩行の継続性とロバスト性を向上させる有効な拡張であると結論づけられる．
+
+\section{今後の予定}
+本研究では，軟弱地面に対する重心高さ補償アルゴリズムの基礎的有効性をシミュレーションにより示したが，
+今後は以下の観点からさらなる検証および発展を行う予定である．
+
+\begin{itemize}
+  \item \textbf{実環境床パラメータの測定}\\
+  現段階では床の変形特性をばね・ダンパモデルとして仮定し，代表的な値を用いて評価を行った．
+  今後は UR5 ロボットアームと力覚センサを用いて，実際の床材（スポンジ，人工芝，砂地など）の
+  剛性および粘性係数を計測し，物理特性に基づいたより現実的な床モデルを構築する．
+
+  \item \textbf{複数床パラメータによるシミュレーション評価}\\
+  計測した床特性を踏まえ，軟弱度の異なる複数の床パラメータセットに対してシミュレーションを実施する．
+  これにより，提案アルゴリズムの適用可能範囲，パラメータ感度，および
+  過度な沈み込み・剛性変化に対するロバスト性を評価する．
+
+  \item \textbf{実機ロボットを用いたアルゴリズム検証}\\
+  CHIDORI 実機などを用いて，実際の軟弱地面上での歩行実験を実施し，
+  シミュレーション結果との整合性を検証する．
+  また，実環境固有の遅延，センサノイズ，予期せぬ非線形性に対しても
+  提案手法が有効に機能するかを確認し，アルゴリズムの実用性を評価する．
+\end{itemize}
+
+
+%========================================
+\appendix
+\begin{thebibliography}{99}
+
+\bibitem{caron2017}
+S.~Caron and A.~Mallein,
+``Balance control using both ZMP and CoM height variations: a convex boundedness approach,''
+\textit{IEEE Robotics and Automation Letters}, vol.~2, no.~4, pp.~2725--2732, 2017.
+
+\bibitem{faraji2017}
+S.~Faraji and A.~J.~Ijspeert,
+``3D walking with a VHIP model and footstep planning using model predictive control,''
+in \textit{Proceedings of the IEEE International Conference on Robotics and Automation (ICRA)}, 
+pp.~3404--3410, 2017.
+
+\bibitem{ur5manual}
+Universal Robots A/S,
+``UR5 Robot Arm: User Manual,''
+Universal Robots, 2016.
+
+\bibitem{kasaibook}
+K.~S.~Fu, R.~C.~Gonzalez, and C.~S.~G.~Lee,
+``Robotics: Control, Sensing, Vision, and Intelligence,''
+McGraw-Hill, 1987.
+
+\bibitem{kajita2003}
+S.~Kajita, F.~Kanehiro, K.~Kaneko, K.~Fujiwara, K.~Harada, K.~Yokoi, and H.~Hirukawa,
+``Biped walking pattern generation by using preview control of zero-moment point,''
+in \textit{Proceedings of the IEEE International Conference on Robotics and Automation (ICRA)}, 
+pp.~1620--1626, 2003.
+
+\bibitem{englsberger2014}
+J.~Englsberger, C.~Ott, and A.~Albu-Schäffer,
+``Three-dimensional bipedal walking control based on divergent component of motion,''
+\textit{IEEE Transactions on Robotics}, vol.~31, no.~2, pp.~355--368, 2015.
+
+
+
+\end{thebibliography}
+
+
+\end{CJK}
+\end{document}
