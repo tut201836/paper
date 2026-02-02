@@ -1,15 +1,7 @@
-\chapter{軟弱地面における歩行と課題の整理}
-
-本章では，軟弱地面における二足歩行ロボットの歩行時に生じる床沈み込み現象に着目し，それが歩行制御，特に重心（Center of Mass: CoM）制御に与える影響について整理する．従来の歩行制御手法は，床を剛体として仮定する場合が多く，床変形を伴う環境における挙動は十分に考慮されてこなかった．本章では，床沈み込みが歩行安定性に与える影響を力学的・制御的観点から明らかにし，本研究で扱う問題設定を明確化する．
-
+\chapter{床沈み込みを考慮した歩行制御手法}
 \label{chap:method}
-%
-\input{method/phenomenon}
-%
-\input{method/effection}
-%
-\input{method/relation-com-zmp}
-%
-\input{method/limitation}
-%
-\input{method/problem-setting}
+
+本章では，前章までのシミュレーション解析により明らかとなった，軟弱地面における歩行不安定化の要因に基づき，床沈み込みを考慮した歩行制御手法を提案する．特に，両脚支持期から片脚支持期への遷移時に発生する支持脚ロール方向トルクの増大に着目し，これを抑制することを目的とする．
+
+\input{method/method_overview}
+\input{method/comz_update_algorithm}
