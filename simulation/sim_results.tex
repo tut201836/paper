@@ -16,13 +16,13 @@
 \subsection{高・低反発ウレタン床（Case1，Case2）における結果}
 \label{subsec:sim_result_urethane}
 
-高・低反発ウレタンを模擬した Case1 および Case2 では，床沈み込みは発生するものの沈み込み量は比較的小さく，従来制御手法においても歩行を継続することが可能であった．沈み込みが生じた直後には，ZMP が一時的に沈み込んだ足裏の外側側面方向へ移動する挙動が確認されたが，その後 ZMP は支持脚足裏内へ戻り，姿勢は安定した．これらの条件では，両脚支持期から片脚支持期への遷移においても転倒には至らず，歩行は最後まで維持された．
+\cref{fig:normal_uretan_zmp} に，高・低反発ウレタン床における ZMP 軌道を，剛性床上を歩行した際のログと比較して示す．高・低反発ウレタンを模擬した Case1 および Case2 では，床沈み込みは発生するものの沈み込み量は比較的小さく，従来制御手法においても歩行を継続することが可能であった．沈み込みが生じた直後（Subduction Point : \cref{fig:normal_uretan_zmp}参照）には，ZMP が一時的に沈み込んだ足裏の外側側面方向へ移動する挙動が確認されたが，その後 ZMP は支持脚足裏内へ戻り，姿勢は安定した．これらの条件では，両脚支持期から片脚支持期への遷移においても転倒には至らず，歩行は最後まで維持された．
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.9\linewidth]{images/uretan_zmp.png}
+  \includegraphics[width=1.0\linewidth]{images/normal_uretan_zmp.png}
   \caption{高・低反発ウレタン床におけるZMP軌道}
-  \label{fig:uretan_zmp}
+  \label{fig:normal_uretan_zmp}
 \end{figure}
 
 \subsection{緩衝材スポンジ床（Case3）における結果}
@@ -30,9 +30,23 @@
 
 緩衝材として一般的に用いられるスポンジを模擬した Case3 では，床の剛性が低いため，接地直後に急激な沈み込みが発生した．この沈み込みに伴い，ロボットの姿勢が両脚支持期において急激に変化し，ZMP が支持脚足裏の外側側面方向へ大きく移動した．その結果，ZMP が支持脚足裏の支持領域を大きく逸脱し，片脚支持期へ移行する前に姿勢を回復できないまま転倒に至る挙動が確認された．
 
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=1.0\linewidth]{images/normal_sponge_zmp.pdf}
+  \caption{緩衝材スポンジ床におけるZMP軌道}
+  \label{fig:sponge_zmp}
+\end{figure}
+
 \subsection{シミュレーション設定床（Case4）における結果}
 \label{subsec:sim_result_simulated}
 
-シミュレーション上で設定した床条件である Case4 では，床沈み込み中に ZMP が支持脚足裏の外側側面方向へ移動する挙動が確認されたものの，沈み込み中に転倒に至ることはなかった．しかしながら，両脚支持期から片脚支持期へ移行した瞬間に，ロボットは支持脚とは反対側の遊脚方向へ傾き始め，次の接地動作に入る前に転倒するケースが確認された．この条件では，沈み込みそのものよりも，歩行フェーズ遷移時の挙動が転倒に強く関与していることが観測された．
+シミュレーション上で設定した床条件である Case4 では，床沈み込み中に ZMP が支持脚足裏の外側側面方向へ移動する挙動が確認されたものの，沈み込み中に転倒に至ることはなかった．しかしながら，両脚支持期から片脚支持期へ移行した瞬間に，ロボットは支持脚とは反対側の遊脚方向へ傾き始め，次の接地動作に入る前に転倒するケースが確認された （\cref{fig:case4_zmp}参照）．この条件では，沈み込みそのものよりも，歩行フェーズ遷移時の挙動が転倒に強く関与していることが観測された．
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=1.0\linewidth]{images/case4_zmp.pdf}
+  \caption{シミュレーション設定床（Case4）におけるZMP軌道}
+  \label{fig:case4_zmp}
+\end{figure}
 
 以上の結果から，軟弱地面歩行においては床沈み込みの大きさや速度だけでなく，転倒が発生する歩行フェーズが床条件によって異なることが明らかとなった．次節では，これらの結果に基づき，特に Case3 および Case4 において歩行が不安定化した要因について力学的観点から考察を行う．
