@@ -1,0 +1,73 @@
+\begin{thebibliography}{10}
+
+\bibitem{kajita2001}
+Shuuji Kajita and Kazuo Tani.
+\newblock Study of dynamic biped locomotion on rugged terrain.
+\newblock {\em IEEE International Conference on Robotics and Automation
+  (ICRA)}, pages 1405--1411, 2001.
+
+\bibitem{kajita2003}
+Shuuji Kajita, Fumio Kanehiro, Kenji Kaneko, Kensuke Fujiwara, Kiyoshi Harada,
+  Kazuhito Yokoi, and Hirohisa Hirukawa.
+\newblock Biped walking pattern generation by using preview control of
+  zero-moment point.
+\newblock In {\em IEEE International Conference on Robotics and Automation
+  (ICRA)}, pages 1620--1626, 2003.
+
+\bibitem{pratt2006}
+Jerry Pratt, John Carff, Sergey Drakunov, and Ambarish Goswami.
+\newblock Capture point: A step toward humanoid push recovery.
+\newblock In {\em IEEE-RAS International Conference on Humanoid Robots
+  (Humanoids)}, pages 200--207, 2006.
+
+\bibitem{caron2017}
+Nicolas Caron, Abderrahmane Kheddar, and Olivier Tempier.
+\newblock Stair climbing stabilization of the hrp-4 humanoid robot using
+  whole-body admittance control.
+\newblock {\em IEEE Robotics and Automation Letters}, 2(3):1671--1678, 2017.
+
+\bibitem{caron2019}
+Nicolas Caron and Quang-Cuong Pham.
+\newblock Balance control using both zmp and com height variations.
+\newblock {\em IEEE Transactions on Robotics}, 35(2):355--371, 2019.
+
+\bibitem{liu2020}
+Mingjie Liu and Koushil Sreenath.
+\newblock Exploiting variable height inverted pendulum dynamics for balancing
+  and walking.
+\newblock {\em IEEE Robotics and Automation Letters}, 5(2):2034--2041, 2020.
+
+\bibitem{englsberger2015}
+Johannes Englsberger, Christian Ott, and Alin Albu-Sch{\"a}ffer.
+\newblock Three-dimensional bipedal walking control using divergent component
+  of motion.
+\newblock {\em IEEE Transactions on Robotics}, 31(2):355--368, 2015.
+
+\bibitem{dai2014}
+Hongkai Dai, Andr{\'e}s Valenzuela, and Russ Tedrake.
+\newblock Whole-body motion planning with centroidal dynamics and full
+  kinematics.
+\newblock {\em IEEE-RAS International Conference on Humanoid Robots}, pages
+  295--302, 2014.
+
+\bibitem{karakasis2022med}
+Chrysostomos Karakasis, Ioannis Poulakakis, and Panagiotis Artemiadis.
+\newblock Robust dynamic walking for a 3d dual-slip model under one-step
+  unilateral stiffness perturbations: Towards bipedal locomotion over compliant
+  terrain.
+\newblock In {\em Proceedings of the Mediterranean Conference on Control and
+  Automation (MED)}, 2022.
+
+\bibitem{zhao2017}
+Yajun Zhao, Boris Fern{\'a}ndez, and Luis Sentis.
+\newblock Capturability-based analysis and control of legged locomotion.
+\newblock {\em The International Journal of Robotics Research}, 36(2):190--216,
+  2017.
+
+\bibitem{Katayama2023MPC}
+S.~Katayama.
+\newblock Model predictive control of legged and humanoid robots.
+\newblock {\em Journal of Intelligent & Robotic Systems}, 2023.
+\newblock Survey of MPC applications in humanoid robotics.
+
+\end{thebibliography}

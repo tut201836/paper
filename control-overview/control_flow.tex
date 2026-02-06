@@ -1,24 +1,34 @@
 \section{二足歩行ロボットの制御フロー}
 \label{sec:control_flow}
 
-本研究で用いる二足歩行ロボットの制御系は，計測情報に基づくフィードバック制御と歩行計画に基づく予測制御を組み合わせた階層的な構成をとっている．本節では，1 制御周期における制御フローの概要を，各処理段階に分けて説明する．制御フローの全体像を \cref{fig:control_flow} に示す．
+本研究で用いる二足歩行ロボットの制御系は，計測情報に基づくフィードバック制御と歩行計画に基づく予測制御を組み合わせた階層的な構成をとっている．本節では，1 制御周期における制御フローの概要を，各処理段階に分けて説明する．制御フローの全体像は \cref{fig:control_flow} に示したとおりである．
 
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=1.0\linewidth]{images/control_flow.png}
-  \caption{二足歩行ロボットの制御フロー}
-  \label{fig:control_flow}
-\end{figure}
+\subsection{歩行パラメータ入力と参照 ZMP 軌道の生成}
+\label{subsec:zmp_planned_generation}
+
+ロボットの歩行開始時には，操作者または上位システムから，歩行速度や歩幅などの歩行パラメータが入力として与えられる．
+これらのパラメータは，ロボットがどのような歩行を行うかを規定する高位の目標情報であり，
+以降の制御フロー全体の基準となる．
+
+入力された歩行速度および歩幅に基づき，あらかじめ設計された歩行計画生成器によって，
+歩行周期，支持脚切替のタイミング，および足先の接地位置が決定される．
+これらの情報をもとに，歩行中に理想的に実現されるべき ZMP の時間軌道
+$\mathrm{ZMP}_{\mathrm{planned}}$ が生成される．
+
+$\mathrm{ZMP}_{\mathrm{planned}}$ は，外乱やモデル誤差が存在しない理想的な条件下において，
+安定した歩行を実現するための基準軌道であり，歩行計画に基づくフィードフォワード情報として位置づけられる．
+本研究では，この $\mathrm{ZMP}_{\mathrm{planned}}$ を制御周期ごとに参照しつつ，
+後段のフィードバック制御によって実際のロボット状態との偏差を補償する構成を採っている．
 
 \subsection{CoM 状態の計測と参照 ZMP 軌道}
 \label{subsec:com_meas_zmp_planned}
 
-各制御周期の開始時点において，ロボットの現在の CoM の計測値 $\mathrm{CoM}_{\mathrm{measure}}$ を取得する．この重心位置は，関節角度およびリンクモデルに基づいて算出された推定値であり，ロボットの実際の運動状態を反映した情報である．同時に，プログラム実行時にあらかじめ生成された ZMP の目標軌道 $\mathrm{ZMP}_{\mathrm{planned}}$ を参照する．$\mathrm{ZMP}_{\mathrm{planned}}$ は，歩行目標に基づいて生成された理想的な ZMP の時間推移を表しており，歩行中の安定性の基準となる．この段階では，$\mathrm{ZMP}_{\mathrm{planned}}$ はフィードフォワード的な情報として用いられる．
+各制御周期の開始時点において，ロボットの現在の CoM の計測値 $\mathrm{CoM}_{\mathrm{measure}}$ を取得する．この重心位置は，関節角度およびリンクモデルに基づいて算出された推定値であり，ロボットの実際の運動状態を反映した情報である．同時に，プログラム実行時にあらかじめ生成された ZMP の目標軌道 である$\mathrm{ZMP}_{\mathrm{planned}}$ を参照する．
 
 \subsection{モデル予測制御による目標 ZMP の生成}
 \label{subsec:zmp_ref_generation}
 
-次に，重心位置の計測値 $\mathrm{CoM}_{\mathrm{meas}}$ と目標軌道 $\mathrm{ZMP}_{\mathrm{planned}}$ を入力として，モデル予測制御（Model Predictive Control: MPC）を適用する．MPC では，ロボットの動力学モデルを用いて将来の状態を予測し，歩行の安定性を満たすように最適化を行うことで，次の制御周期における目標軌道$\mathrm{ZMP}_{\mathrm{ref}}$ を生成する．この処理により，歩行計画で与えられた理想的な ZMP 軌道と実際のロボット状態との偏差が補償され，外乱やモデル誤差に対してロバストな ZMP 指令が得られる．生成された $\mathrm{ZMP}_{\mathrm{ref}}$ は，後段の重心目標生成および全身運動生成の基準となる．
+次に，重心位置の計測値 $\mathrm{CoM}_{\mathrm{meas}}$ と目標軌道 $\mathrm{ZMP}_{\mathrm{planned}}$ を入力として，モデル予測制御（Model Predictive Control: MPC）を適用する \cite{Katayama2023MPC}．MPC では，ロボットの動力学モデルを用いて将来の状態を予測し，歩行の安定性を満たすように最適化を行うことで，次の制御周期における目標軌道$\mathrm{ZMP}_{\mathrm{ref}}$ を生成する．この処理により，歩行計画で与えられた理想的な ZMP 軌道と実際のロボット状態との偏差が補償され，外乱やモデル誤差に対してロバストな ZMP 指令が得られる．生成された $\mathrm{ZMP}_{\mathrm{ref}}$ は，後段の重心目標生成および全身運動生成の基準となる．
 
 \subsection{目標 ZMP に基づく重心目標軌道の生成}
 \label{subsec:com_planned_generation}
