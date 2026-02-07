@@ -21,12 +21,12 @@ z_{\mathrm{ref}}^{\mathrm{conv}}(t)=z_{\mathrm{plan}}(t).
 z_{\mathrm{ref}}^{\mathrm{prop}}(t+\Delta t)=z_{\mathrm{plan}}(t+\Delta t)+s(t)\left(\dot{z}_{\mathrm{ref}}(t)\Delta t+\frac{1}{2}\ddot{z}_{\mathrm{ref}}(t)\Delta t^2\right).
 \label{eq:comz_prop}
 \end{equation}
-式 \eqref{eq:comz_prop} において，床沈み込みが検知されていない場合（$s(t)=0$）には従来手法と同様に計画軌道に追従し，床沈み込みが検知された場合（$s(t)=1$）にのみ CoM 高さ参照が能動的に増加する．この操作により，床沈み込みが生じる局面において CoM 高さを一時的に高く保つことができ，支持脚を支点とした回転運動の角加速度を低減することで，DS から SS への遷移時に発生する過大なロール方向支持脚トルクの抑制が期待される．
+式 \eqref{eq:comz_prop} において，床沈み込みが検知されていない場合（$s(t)=0$）には従来手法と同様に計画軌道に追従し，床沈み込みが検知された場合（$s(t)=1$）にのみ CoM 高さ参照が能動的に増加する．この操作により，床沈み込みが生じる局面においてのみ CoM 高さを一時的に高く保つことができ，支持脚を支点とした回転運動の角加速度を低減することで，DS から SS への遷移時に発生する過大なロール方向支持脚トルクの抑制が期待される．常時アルゴリズムを使用しないのは，常にCoM高さを高くすると歩行の安定性が低下する可能性があるためである．
 
 \subsection{従来手法と提案手法の比較}
 \label{subsec:comz_compare}
 
-従来手法と提案手法における CoM 高さ参照の更新方法の違いを Table~\ref{tab:comz_compare} に示す．従来手法は計画軌道追従のみであるのに対し，提案手法は床沈み込み検知をトリガとして CoM 高さ参照を先読み的に更新する点に特徴がある．
+従来手法と提案手法における CoM 高さ参照の更新方法の違いを Table~\ref{tab:comz_compare} に示す．従来手法は計画軌道追従のみであるのに対し，提案手法は床沈み込み検知をトリガとして CoM 高さ参照を先読み的に更新する点に特徴がある．制御フローとアルゴリズムの適用箇所については，\cref{fig:control_flow_algo} に示す通りである．
 
 \begin{table}[t]
   \centering
@@ -43,3 +43,42 @@ z_{\mathrm{ref}}^{\mathrm{prop}}(t+\Delta t)=z_{\mathrm{plan}}(t+\Delta t)+s(t)\
     \hline
   \end{tabular}
 \end{table}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=1.0\linewidth]{images/control_flow_algo.png}
+  \caption{制御フロー と CoM 高さ参照更新アルゴリズムの関係}
+  \label{fig:control_flow_algo}
+\end{figure}
+
+
+
+\subsection{床沈み込み検知の方法}
+\label{subsec:comz_detection}
+
+提案手法では，床沈み込みが発生した瞬間を検知し，それをトリガーとして CoM 高さ参照を更新する必要がある．本研究では，支持脚足先と床面との相対変位に基づく沈み込み量を用い，その時間変化をローパスフィルタおよびヒステリシス処理によって判定する手法を採用した．
+
+まず，支持脚足先と床面との鉛直方向相対変位を $\delta z(t)$ と定義し，これを沈み込み量の推定値とする．$\delta z(t)$ は，床が剛体である場合にはほぼ一定となる一方，軟弱地面では支持脚接地後に増加する．しかし，実際のセンサ値や推定値には，高周波ノイズや微小な振動成分が含まれるため，生の値を直接しきい値判定に用いると誤検知が生じやすい．
+
+そこで，本研究では沈み込み量 $\delta z(t)$ に対して一次のローパスフィルタを適用し，平滑化された沈み込み指標 $\tilde{\delta z}(t)$ を用いる．制御周期を $\Delta t$，フィルタ係数を $\alpha \in (0,1)$ とすると，ローパスフィルタは次式で表される．
+\begin{equation}
+\tilde{\delta z}(t)=\alpha\,\delta z(t)+(1-\alpha)\,\tilde{\delta z}(t-\Delta t).
+\label{eq:sink_lpf}
+\end{equation}
+この処理により，高周波ノイズが抑制され，床沈み込みに起因する比較的低周波な変化のみが抽出される．
+
+次に，平滑化された沈み込み指標 $\tilde{\delta z}(t)$ に対して，ヒステリシスを持つしきい値判定を行う．具体的には，沈み込み検知開始しきい値 $\delta z_{\mathrm{on}}$ と，検知解除しきい値 $\delta z_{\mathrm{off}}$（$\delta z_{\mathrm{off}} < \delta z_{\mathrm{on}}$）を設定し，以下の条件に基づいて沈み込み検知フラグ $s(t)\in\{0,1\}$ を更新する．
+\begin{equation}
+s(t)=
+\begin{cases}
+1 & \text{if } s(t-\Delta t)=0 \ \text{and}\ \tilde{\delta z}(t)>\delta z_{\mathrm{on}},\\
+0 & \text{if } s(t-\Delta t)=1 \ \text{and}\ \tilde{\delta z}(t)<\delta z_{\mathrm{off}},\\
+s(t-\Delta t) & \text{otherwise}.
+\end{cases}
+\label{eq:sink_hysteresis}
+\end{equation}
+
+このヒステリシス処理により，沈み込み量がしきい値付近で振動する場合であっても，沈み込み検知のオン・オフが頻繁に切り替わることを防ぎ，安定した検知が可能となる．特に，DS から SS への遷移時には支持脚荷重の急激な変化が生じるため，このようなヒステリシス構造は誤検知の抑制に有効である．
+
+以上の処理によって得られる沈み込み検知フラグ $s(t)$ は，\cref{subsec:comz_proposed} で示した CoM 高さ参照更新則においてトリガとして用いられる．すなわち，床沈み込みが検知された場合にのみ CoM 高さ参照が能動的に増加し，沈み込みが収束した後は従来の計画軌道追従へと滑らかに復帰する．この構成により，不要な CoM 高さ変動を抑制しつつ，沈み込み床に対して選択的かつ即応的な安定化制御が可能となる．
+

@@ -14,55 +14,74 @@
 
 \usepackage{thesis}
 
-\thesis{修士論文}
-\title{
-  \scalebox{1.0}{二足歩行ロボットの}\\
-  \vspace{0.3zh}
-  \scalebox{1.0}{軟弱地面歩行アルゴリズムの提案と評価}\\
-  \vspace{-3zh}
-}
+% ===== Title page parameters =====
+\newcommand{\thesistitle}{二足歩行ロボットの軟弱地面歩行アルゴリズムの提案と評価}
+\newcommand{\thesisyear}{2025}                % 年度
+\newcommand{\thesisdegree}{修士（工学）}       % 学位
+\newcommand{\major}{情報・知能工学専攻}        % 専攻名
+\newcommand{\authorname}{新家 海斗}            % 氏名
+\newcommand{\studentid}{201836}               % 学籍番号
+\newcommand{\advisor}{指導教員: 垣内 洋平}     % 指導教員
+\newcommand{\university}{豊橋技術科学大学}      % 大学名
 
-\date{2026年 ~~月 ~=日 }
-
-\teacher{垣内 洋平 教授}
-\vspace{-2.0zh}
-\organization{豊橋技術科学大学大学院 工学研究科 情報・知能工学専攻}
-\author{M201836 新家 海斗}
-\vspace{-10zh}
 \begin{document}
+
+% ===== Title Page =====
+\begin{titlepage}
+  \thispagestyle{empty}
+  \begin{center}
+    \vspace*{40mm}
+
+    % 題目（長い場合は自動で折り返す）
+    {\LARGE
+      \parbox{0.9\linewidth}{\centering \thesistitle}\par
+    }
+
+    \vspace{20mm}
+
+    {\Large \thesisyear \par}
+    \vspace{5mm}
+
+    {\Large \thesisdegree \par}
+    \vspace{5mm}
+
+    {\Large \major \par}
+    \vspace{15mm}
+
+    {\Large \authorname \par}
+    \vspace{3mm}
+
+    {\Large \studentid \par}
+    \vspace{10mm}
+
+    {\Large \advisor \par}
+    \vspace{15mm}
+
+    {\Large \university \par}
+
+  \end{center}
+\end{titlepage}
+
+\clearpage
 
 %% Front Matter
 \frontmatter{}
-%
 \include{frontmatter/main}
-%
+
 %% Main Matter
 \mainmatter{}
-%
 \include{introduction/main}
-%
 \include{control-overview/main}
-%
 \include{related-research/main}
-%
 \include{assignment/main}
-%
 \include{simulation/main}
-%
 \include{method/main}
-%
 \include{experiment/main}
-%
 \include{discussion/main}
-%
-%% Appendix
-% \appendix{}
-% \include{appendix}
-%
-%% Back Matter
-\backmatter{}
-%
-\include{backmatter/main}
-%
+\include{examination_answer/main}
+
+% %% Back Matter
+% \backmatter{}
+% \include{backmatter/main}
 
 \end{document}

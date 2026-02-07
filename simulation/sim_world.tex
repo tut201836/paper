@@ -79,12 +79,19 @@ UR5e は，先端に加わる力が約150\,Nを超えた場合に緊急停止す
 \subsection{床物理特性の近似モデル}
 \label{subsec:floor_identification}
 
-床の鉛直方向の力学特性は，バネマスダンパー系に基づく Kelvin--Voigt 型モデルとして近似した．床は鉛直方向にのみ変位する一次元要素として扱い，押し込み変位 $x$ およびその速度 $\dot{x}$ に対して反力 $F$ が線形に発生するものと仮定した．床反力は次式で表される．
+床の鉛直方向の力学特性は，バネマスダンパー系に基づいて近似した（\cref{fig:bane_danpa}）．床は鉛直方向にのみ変位する一次元要素として扱い，押し込み変位 $x$ およびその速度 $\dot{x}$ に対して反力 $F$ が線形に発生するものと仮定した．床反力は次式で表される．
 \begin{equation}
 F(t)=k\,x(t)+c\,\dot{x}(t),
 \label{eq:kv_model}
 \end{equation}
 ここで $k$ はバネ定数 [N/m]，$c$ はダンパー定数 [N$\cdot$s/m] である．
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.5\linewidth]{images/bane_danpa.png}
+  \caption{バネマスダンパー系のモデル}
+  \label{fig:bane_danpa}
+\end{figure}
 
 押し込み量を一定とし，押し込みに要する時間を変化させることで異なる速度条件を与えた．押し込み量を $x_{\mathrm{total}}$，押し込み時間を $T$ とすると，押し込み速度は
 \begin{equation}

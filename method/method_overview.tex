@@ -6,7 +6,7 @@
 
 二足歩行ロボットの DS から SS への遷移時に生じる転倒挙動は，特にロール方向，すなわち左右方向の重心運動として顕在化する．ここではまず，線形倒立振子モデル（Linear Inverted Pendulum Model: LIPM）の基本式に立ち返り，重心高さが横方向の重心加速度に与える影響について整理する．
 
-LIPM では，重心高さを一定値 $z_{\mathrm{c}}$ と仮定し，角運動量の影響を無視することで，CoM と ZMP の関係は次式で表される（$y$ 軸方向）．
+LIPM では，重心高さを一定値 $z_{\mathrm{c}}$ と仮定し，角運動量の影響を無視することで，CoM と ZMP の関係は次式で表される（ \cref{eq:lipm} の $y$ 軸方向）．
 \begin{equation}
 \ddot{y} = \frac{g}{z_{\mathrm{c}}}\left(y - y_{\mathrm{zmp}}\right)
 \label{eq:lipm_y}
@@ -15,29 +15,10 @@ LIPM では，重心高さを一定値 $z_{\mathrm{c}}$ と仮定し，角運動
 
 式 \eqref{eq:lipm_y} の比例係数は $g / z_{\mathrm{c}}$ であり，これは重心高さ $z_{\mathrm{c}}$ に反比例する．したがって，$z_{\mathrm{c}}$ が増大すると，同一の ZMP--CoM 偏差に対して生じる加速度 $\ddot{y}$ は小さくなる．すなわち，重心高さを高くすることは，横方向の重心運動の加速を抑制し，転倒方向への倒れ込みを緩やかにする方向に働く．
 
-この関係は，自然周波数
-\begin{equation}
-\omega := \sqrt{\frac{g}{z_{\mathrm{c}}}}
-\label{eq:omega_def}
-\end{equation}
-を用いると，より明確に解釈できる．式 \eqref{eq:lipm_y} は
-\begin{equation}
-\ddot{y} = \omega^2 \left(y - y_{\mathrm{zmp}}\right)
-\label{eq:lipm_y_omega}
-\end{equation}
-と書き換えられるため，$z_{\mathrm{c}}$ の増大は $\omega$ の低下に対応する．簡単のため $y_{\mathrm{zmp}}$ が短時間で一定であると仮定すると，$e := y - y_{\mathrm{zmp}}$ に対して
-\begin{equation}
-\ddot{e} = \omega^2 e
-\label{eq:error_dyn}
-\end{equation}
-を得る．この系では，$\omega$ が大きいほど $e$ の増大が速くなり，横方向への倒れ込みが急激に進行する．したがって，重心高さを高くして $\omega$ を小さくすることは，転倒方向への発散を時間的に緩和する効果を持つと解釈できる．
-
-以上より，LIPM の枠組みにおいては，重心高さ $z_{\mathrm{c}}$ の増大が横方向加速度の低下を通じて，転倒挙動を緩やかにする主要因であることが分かる．次に，この関係をより直感的かつ力学的に理解するため，支持脚足先を支点とした単純な振り子モデルを用いた考察を行う．
-
 \subsection{振り子モデルに基づく CoM 高さと転倒挙動の力学的解釈}
 \label{subsec:pendulum_theory}
 
-片脚支持期における二足歩行ロボットのロール方向挙動は，支持脚足先を支点とした倒立振り子運動として近似的に捉えることができる．ここでは，CoM を質点とし，支点から CoM までの距離を $\ell$ とする単純な振り子モデルを用いて，CoM 高さが転倒挙動に与える影響を力学的に考察する．
+片脚支持期における二足歩行ロボットのロール方向挙動は，LIPMに基づき，支持脚足先を支点とした倒立振り子運動として近似的に捉えることができる．ここでは，CoM を質点とし，支点から CoM までの距離を $\ell$ とする単純な振り子モデルを用いて，CoM 高さが転倒挙動に与える影響を力学的に考察する．
 
 ロール方向の傾き角を $\theta$ とすると，支点まわりの運動方程式は次式で表される．
 \begin{equation}
