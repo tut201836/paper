@@ -33,7 +33,24 @@ $\mathrm{ZMP}_{\mathrm{planned}}$ は，外乱やモデル誤差が存在しな�
 \subsection{目標 ZMP に基づく重心目標軌道の生成}
 \label{subsec:com_planned_generation}
 
-生成された $\mathrm{ZMP}_{\mathrm{ref}}$ を基に，次に重心の目標軌道 $\mathrm{CoM}_{\mathrm{planned}}$ を計算する．この段階では，ZMP と重心運動の関係に基づくモデルを用い，$\mathrm{ZMP}_{\mathrm{ref}}$ を実現するために必要な重心位置およびその時間変化を決定する．$\mathrm{CoM}_{\mathrm{planned}}$ は，歩行中の安定性を直接左右する重要な目標量であり，特に支持脚切替時や外乱が加わった場合において，ロボットの転倒を防ぐための役割を担う．この重心目標は，次段階の全身逆運動学における拘束条件として用いられる．
+生成された $\mathrm{ZMP}_{\mathrm{ref}}$ を基に，次に重心の目標軌道 $\mathrm{CoM}_{\mathrm{planned}}$ を計算する．
+この段階では，ZMP と重心運動の関係に基づくモデルを用い，
+$\mathrm{ZMP}_{\mathrm{ref}}$ を実現するために必要な重心位置およびその時間変化を決定する．
+
+本研究で用いる制御系では，この重心目標軌道の生成において，
+Baseline Walking Controller（BWC）と呼ばれる歩行制御器を用いている
+\cite{BaselineWalkingControllerGitHub}．
+BWC は，歩行計画によって与えられた参照 ZMP 軌道と，
+モデル予測制御によって補正された $\mathrm{ZMP}_{\mathrm{ref}}$ に基づき，
+歩行の安定性を維持するように重心運動を調整する制御手法である．
+この制御器により，外乱やモデル誤差が存在する状況においても，
+計画された歩行パターンを大きく崩すことなく，
+安定した重心運動を生成することが可能となる．
+
+$\mathrm{CoM}_{\mathrm{planned}}$ は，歩行中の安定性を直接左右する重要な目標量であり，
+特に支持脚切替時や外乱が加わった場合において，
+ロボットの転倒を防ぐための役割を担う．
+この重心目標は，次段階の全身逆運動学における拘束条件として用いられる．
 
 \subsection{全身逆運動学による関節角度の生成}
 \label{subsec:whole_body_ik}

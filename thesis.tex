@@ -7,10 +7,25 @@
 \usepackage{subcaption}
 
 \usepackage{cleveref}
-\crefname{figure}{Fig.}{Figs.}
-\Crefname{figure}{Fig.}{Figs.}
+\usepackage{cleveref}
+
+% ===== Japanese reference names =====
+\crefname{figure}{図}{図}
+\Crefname{figure}{図}{図}
+
+\crefname{section}{項}{項}
+\Crefname{section}{項}{項}
+
+\crefname{subsection}{項}{項}
+\Crefname{subsection}{項}{項}
+
 \crefname{equation}{式}{式}
 \Crefname{equation}{式}{式}
+
+% ===== Caption names in Japanese =====
+\renewcommand{\figurename}{図}
+\renewcommand{\tablename}{表}
+
 
 \usepackage{thesis}
 
@@ -81,7 +96,7 @@
 \include{examination_answer/main}
 
 % %% Back Matter
-% \backmatter{}
-% \include{backmatter/main}
+\backmatter{}
+\include{backmatter/main}
 
 \end{document}
